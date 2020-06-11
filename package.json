@@ -1,0 +1,19 @@
+{
+  "name": "mernbh",
+  "version": "1.0.0",
+  "description": "Mern Stack BrainHive",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TitusBuchanan/Mern-Brainhive.git"
+  },
+  "author": "Titus Buchanan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TitusBuchanan/Mern-Brainhive/issues"
+  },
+  "homepage": "https://github.com/TitusBuchanan/Mern-Brainhive#readme"
+}
