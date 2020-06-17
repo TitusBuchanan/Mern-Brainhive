@@ -8,7 +8,7 @@ const User = require("../../models/User");
 
 // @route		POST api/users
 // @desc		create new user
-// @access	public
+// @access	    public
 router.post(
   "/",
   [
@@ -51,7 +51,7 @@ router.post(
 
 // @route		PUT api/users/
 // @desc		login a user
-// @access	public
+// @access	    public
 router.put(
   "/",
   [
@@ -86,6 +86,5 @@ router.put(
   }
 );
 
-router.put();
 
 module.exports = router;
