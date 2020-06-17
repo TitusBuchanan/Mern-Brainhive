@@ -1,117 +1,91 @@
 const express = require("express");
-const bcrypt = require('bcryptjs');
-const {check, validationResult} = require('express-validator');
-const User = require('../../models/User');
+const bcrypt = require("bcryptjs");
+const { check, validationResult } = require("express-validator");
 const router = express.Router();
-const isEmpty = require('../../utils/isEmpty');
-const jwt = require('jsonwebtoken');
-const config = require('../../config/default.json');
+const isEmpty = require("../../utils/isEmpty");
+
+const User = require("../../models/User");
 
 // @route		POST api/users
 // @desc		create new user
-// @access	    public
-router.post("/", 
-[
-    check('email','Email Required').not().isEmpty(),
-    check('email','Valid Email Required').isEmail(),
-    check('password','Please enter a password with at least six chrachters').isLength({ min:6 })
-],
- async (req, res) => {
-    const errors= validationResult(req)
+// @access	public
+router.post(
+  "/",
+  [
+    check("email", "Email Required").not().isEmpty(),
+    check("email", "Valid Email Required").isEmail(),
+    check(
+      "password",
+      "Please enter a password with at least 6 characters."
+    ).isLength({ min: 6 }),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
 
-    if(!errors.isEmpty()){
-        return res.status(400).json({ errors: errors.array() })
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-  
-  
-    const userData = {
-        email: req.body.email,
-        password: req.body.password
+    const { email, password } = req.body;
+    const userData = { email, password };
+
+    try {
+      const salt = await bcrypt.genSalt(10);
+      userData.password = await bcrypt.hash(userData.password, salt);
+
+      // create the code that will check if the email is already in use before creating the new user.
+      const existing = await User.findOne({ email: userData.email });
+
+      if (!isEmpty(existing)) {
+        return res.status(400).json({ email: "email exists" });
+      }
+
+      const user = await User.create(userData);
+
+      res.json(user);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json(error);
     }
-
-    try{
-        const salt = await bcrypt.genSalt(10);
-    userData.password = await bcrypt.hash(userData.password, salt)
-    
-    
-
-    //create code that will check if email is already in use
-    const existing = await User.find({ email:userData.email });
-
-
-    if(!isEmpty(existing)) {
-        return res.status(400).json({ email:'email Exists' });
-    }
-
-
-    const user = await User.create(userData)
-
-    
-
-    res.json(user);
-    } catch(error) {
-        console.error(error);
-        res.status(500).json(error);
-    };
-
-
-    
-    
-
-  
- }
+  }
 );
 
 // @route		PUT api/users/
 // @desc		login a user
-// @access	    public
-
-router.put('/', 
-[
-    check('email','Email Required').not().isEmpty(),
-    check('email','Valid Email Required').isEmail(),
-    check('password','Password Required').not().isEmpty()
-],
-async (req,res) => {
+// @access	public
+router.put(
+  "/",
+  [
+    check("email", "Email Required").not().isEmpty(),
+    check("email", "Valid Email Required").isEmail(),
+    check("password", "Password Required").not().isEmpty(),
+  ],
+  async (req, res) => {
     const errors = validationResult(req);
-    if(!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() })
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
 
     try {
-        const user = await User.findOne({ email: req.body.email })
-            if(isEmpty(user)) {
-                return req.status(404).json({ email: "E-mail not found" })
-            }
+      const user = await User.findOne({ email: req.body.email });
 
-        const isMatch = await bcrypt.compare(req.body.password, user.password)
+      if (isEmpty(user)) {
+        return req.status(404).json({ email: "email not found" });
+      }
 
-        if(!isMatch) {
-            req.status(401).json({ password: "incorrect password" })
-        }
+      const isMatch = await bcrypt.compare(req.body.password, user.password);
 
-        //validated! challenge create the token and return it to the user
-            User.findByIdAndUpdate(user.id, {lastLogin: Date.now()});
-        // information => encoder = key => token => decoder + key => information
-        //                             tofe     tobe 
-        
+      if (!isMatch) {
+        return req.status(401).json({ password: "incorrect password" });
+      }
 
-        const payload = {
-            id: user._id,
-            email: user.email
-        };
-
-        const token = jwt.sign(payload, config.secretOrKey);
-
-        return res.json(token)
-
-        
+      // validated! challenge create the token and return it to the user.
     } catch (error) {
-        console.error(error);
-        res.status(500).json(error)
+      console.error(error);
+      res.status(500).json(error);
     }
-});
+  }
+);
 
-
+router.put();
 
 module.exports = router;
