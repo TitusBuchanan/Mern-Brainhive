@@ -15,15 +15,17 @@
 //timestamps
 //Avatar
 
-const mongoose = require("mongoose");
-const profileSchema = mongoose.Schema(
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const profileSchema = new Schema(
   {
-    name: {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'users',
+    },
+    firstName: {
       type: String,
       required: true,
-
-      minLength: 3,
-      maxLength: 100,
     },
     lastName: {
       type: String,
@@ -31,61 +33,39 @@ const profileSchema = mongoose.Schema(
     },
     occupation: {
       type: String,
-      required: true,
-    },
-   
-    
-    postID: {
-      type: String,
-      required: true,
-    },
-    
-    city: {
-      type: Boolean,
-      default: false,
-    },
-    state: {
-      type: String,
-      required:true
     },
     educationLevel: {
       type: String,
-      enum: [
-        'High School',
-        'College',
-        'Masters',
-        'PHD'],
-      default: "High School",
-    },
-    about: {
-      type: String,
-      maxLength: 250,
-    },
-  
-    location: {
-      type: String,
-      enum: [
-        'Online',
-        'Physical',
-        'Mobile'],
-      default: "Physical",
-    },
-    avatar: {
-        type: [String],
-        default: [],
-      },
-   
-    validationDate: {
-      type: Date,
-      default: Date.now(),
-    },
+      required: true,
 
-    emailValidated: {
-      type: Boolean,
-      default: false,
+    },
+    resourceId: {
+      type: [Schema.Types.ObjectId],
+      ref:'resources'
+    },
+    certifications: {
+      type: [String],
+      
+    },
+    city: {
+      type: String,
+    },
+    state: {
+      type: String,
+    },
+    githubUrl: {
+      type: String,
+    },
+    twitterUrl: {
+      type: String,
+    },
+    youtubeUrl: {
+      type: String,
+    },
+    summary: {
+      type: String,
     },
   },
   { timestamps: {} }
 );
-
-module.exports = Biz = mongoose.model("profiles", profileSchema);
+module.exports = Profile = mongoose.model('profile', profileSchema);
