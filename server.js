@@ -10,6 +10,9 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000
 
 const users = require('./routes/api/users');
+const profiles = require("./routes/api/profiles");
+
+app.use("/api/profiles", profiles);
 
 app.use("/api/users", users);
 
