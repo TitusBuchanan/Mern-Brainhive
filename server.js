@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const config = require('./config/default.json');
+const config = require('./config');
 const mongoose = require('mongoose')
 
 app.use(cors());

@@ -5,7 +5,7 @@ const User = require('../../models/User');
 const router = express.Router();
 const isEmpty = require('../../utils/isEmpty');
 const jwt = require('jsonwebtoken');
-const config = require('../../config/default.json');
+const config = require('../../config');
 
 // @route		POST api/users
 // @desc		create new user

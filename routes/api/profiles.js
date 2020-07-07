@@ -1,10 +1,10 @@
 // create the post (register profile) route. for now make it a public url and expect userid in the body.
 const express = require("express");
-const config = require("config");
+const config = require("../../config");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 
-const { check, validationResult } = require("express-validator/check");
+const { check, validationResult } = require("express-validator");
 
 const Profile = require("../../models/Profile");
 
