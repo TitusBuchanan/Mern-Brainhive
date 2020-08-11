@@ -165,25 +165,30 @@ router.put("/:id", auth, [...postValidator], async (req, res) => {
 // });
 
 // @route		DELETE api/posts/:id
-// @desc		DELETE the post by ID
+// @desc		delete the post by id
 // @access	owner
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({ user: req.user.id });
 
-
-//Epic: find and delete the post by ID and return sucess message to requester 
-
-//Check if logged in
-
-//pull post from database 
-
-//confirm we got the post 
-
-//Confirm user is owner of the post 
-
-//Delete the post 
-
-//Return to requester to success
-
-
+    const post = await Post.findOneAndDelete({
+      _id: req.params.id,
+      poster: profile._id,
+    });
+    if (!post) {
+      const p = await Post.findById(req.params.id);
+      if (!p) {
+        return res.status(404).json({ msg: "Post not found" });
+      }
+      return res.status(401).json({ msg: "Unauthorized!" });
+    }
+    res.json({ msg: "success!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json(error);
+  }
+});
+                      
 
 
 
