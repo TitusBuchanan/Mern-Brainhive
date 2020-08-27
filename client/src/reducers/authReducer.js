@@ -1,16 +1,17 @@
 const INITIAL_STATE = {
-    email:"",
-    password:""
+    email: "",
+    password: "",
 };
 
-//Action Handler 
+//Action handler
 export default (state = INITIAL_STATE, action) => {
- switch (action.type) {
-     case 'authUpdate':
-         return {...state, [action.payload.field]: action.payload.value}
-         break;
- 
-     default:
-         return state;
- }
+    console.log("authReducer", action.type);
+    switch (action.type) {
+        case "authUpdate":
+            console.log("authReducer authUpdate");
+            return { ...state, [action.payload.field]: action.payload.value };
+        default:
+            console.log("authReducer type didn't affect me");
+            return state;
+    }
 };
